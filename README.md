@@ -11,6 +11,7 @@ CRUD operations on this model are exposed using a DRF ViewSet in the `users.view
 
 Permissions are given to users inside a signal receiver in `users.models`.
 
+# Current Issue
 `users.tests.models` checks that users have the right set of permissions from guardian's perspective.
 `users.tests.views` checks that logged in users can access endpoints as intended. This is where my issue shows up.
 A given user has the `users.view_customuser` permission, as verified in `users.tests.models`, however the test for
