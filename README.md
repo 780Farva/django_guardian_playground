@@ -1,5 +1,5 @@
 # Django Guardian Playground (with DRF)
-I made this repository to learn django guardian on top of the django rest framework.
+I made this repository to learn [django guardian](https://github.com/django-guardian/django-guardian) on top of the [django rest framework](https://github.com/encode/django-rest-framework/tree/master).
 
 At this stage, I'm unable to effectively give a non-staff user view permissions to list their own selves through the api.
 The tests in the users app demonstrate this.
