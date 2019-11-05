@@ -40,8 +40,20 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     "rest_framework",
+    "guardian",
     'users'
 ]
+
+
+# Guardian settings
+GUARDIAN_MONKEY_PATCH = False
+GUARDIAN_GET_INIT_ANONYMOUS_USER = "users.models.get_anonymous_user_instance"
+ANONYMOUS_USER_NAME = "Anonymous@anonymous.com"
+
+AUTHENTICATION_BACKENDS = {
+    "django.contrib.auth.backends.ModelBackend",
+    "guardian.backends.ObjectPermissionBackend"
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
