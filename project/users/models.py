@@ -16,7 +16,8 @@ from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 from guardian.mixins import GuardianUserMixin
 from guardian.models import UserObjectPermission, GroupObjectPermission
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, get_perms
+from django.contrib.auth.models import Group
 
 from .managers import UserManager
 
@@ -106,10 +107,28 @@ def user_post_save(sender, **kwargs):
         logger.debug(
             f"Giving {created} change, delete, and view permissions for {user}."
         )
+        # Assign model permissions
+        assign_perm("users.change_customuser", user)
+        assign_perm("users.delete_customuser", user)
+        assign_perm("users.view_customuser", user)
+
+        # Assign object permissions on self
         assign_perm("users.change_customuser", user, user)
         assign_perm("users.delete_customuser", user, user)
         assign_perm("users.view_customuser", user, user)
+
+        # Assign object permissions to admins
+        admins_group = Group.objects.get(name="admins")
+        if not "users.add_customuser" in get_perms(admins_group, user):
+            assign_perm("users.add_customuser", admins_group, user)
+            assign_perm("users.change_customuser", admins_group, user)
+            assign_perm("users.delete_customuser", admins_group, user)
+            assign_perm("users.view_customuser", admins_group, user)
+            # assign model permissions to admins, just in case
+            assign_perm("users.add_customuser", admins_group)
+            assign_perm("users.change_customuser", admins_group)
+            assign_perm("users.delete_customuser", admins_group)
+            assign_perm("users.view_customuser", admins_group)
+
         if user.is_staff:
-            assign_perm("users.change_customuser", user)
-            assign_perm("users.delete_customuser", user)
-            assign_perm("users.view_customuser", user)
+            admins_group.user_set.add(user)

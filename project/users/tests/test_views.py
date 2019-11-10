@@ -54,11 +54,12 @@ class ListUsersTest(UsersTest):
         result = self.client.get("/users/", format="json")
         self.assertEqual(result.status_code, status.HTTP_200_OK)
 
-    def test_non_admin_cant_list_all(self):
+    def test_non_admin_just_gets_self(self):
         self.login_as_user()
         result = self.client.get("/users/", format="json")
-        print(f"result data: {result.data}\nstatus code: {result.status_code}")
-        self.assertEqual(result.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(1, len(result.data))
+        self.assertContains(result, self.user.uuid)
+        self.assertEqual(result.status_code, status.HTTP_200_OK)
 
     def test_admin_user_can_list_specific(self):
         self.login_as_admin()
@@ -83,7 +84,7 @@ class ListUsersTest(UsersTest):
     def test_user_cant_list_other_user(self):
         self.login_as_user()
         result = self.client.get(f"/users/{self.admin_user.uuid}/", format="json")
-        self.assertEqual(result.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertEqual(result.status_code, status.HTTP_404_NOT_FOUND)
 
 
 class CreateUserTest(UsersTest):

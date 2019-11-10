@@ -79,10 +79,18 @@ class CustomUserPermissionsTest(TestCase):
         self.assertFalse(self.user.has_perm("delete_permission", self.user))
         self.assertFalse(self.user.has_perm("view_permission", self.user))
 
+        # check that normal users have model permissions
+        self.assertTrue(self.user.has_perm("users.change_customuser"))
+        self.assertTrue(self.user.has_perm("users.delete_customuser"))
+        self.assertTrue(self.user.has_perm("users.view_customuser"))
+
         # normal users can change and delete themselves, once guardian has given them permission
         self.assertTrue(self.user.has_perm("change_customuser", self.user))
         self.assertTrue(self.user.has_perm("delete_customuser", self.user))
         self.assertTrue(self.user.has_perm("view_customuser", self.user))
+        self.assertTrue(self.user.has_perm("users.change_customuser", self.user))
+        self.assertTrue(self.user.has_perm("users.delete_customuser", self.user))
+        self.assertTrue(self.user.has_perm("users.view_customuser", self.user))
 
         # normal users can't change other users or their permissions
         self.assertFalse(self.user.has_perm("change_customuser", self.other_user))
